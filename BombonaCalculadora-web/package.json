@@ -1,0 +1,25 @@
+{
+  "name": "bombonacalc-web",
+  "version": "4.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Aplicação web multiusuário para cálculo industrial por tara.",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "DATABASE_ADAPTER=memory NODE_ENV=development node --watch server/index.js",
+    "start": "node server/index.js",
+    "db:migrate": "node server/migrate.js",
+    "test": "node --test tests/unit/*.test.js tests/api/*.test.js",
+    "test:e2e": "playwright test",
+    "test:all": "npm test && npm run test:e2e",
+    "check": "node --check server/index.js && node --check server/app.js && node --check public/js/app.js"
+  },
+  "dependencies": {
+    "pg": "^8.16.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0"
+  }
+}

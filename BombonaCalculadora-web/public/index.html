@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#070B16">
+  <meta name="description" content="Sistema web multiusuário para cálculo industrial por tara.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>BombonaCalc</title>
+  <link rel="icon" href="/assets/logo-bombonacalc.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="BombonaCalc - página inicial">
+        <img class="brand-logo" src="/assets/logo-bombonacalc.png" alt="" width="48" height="48" decoding="async">
+        <span class="brand-copy">
+          <strong>BombonaCalc</strong>
+          <small>Controle industrial compartilhado</small>
+        </span>
+      </a>
+
+      <div class="topbar-actions">
+        <span id="status-conexao" class="connection-pill" role="status">
+          <span class="connection-dot" aria-hidden="true"></span>
+          <span>Conectando</span>
+        </span>
+        <button id="btn-atualizar" class="icon-button" type="button" aria-label="Atualizar histórico" title="Atualizar histórico">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8.1 8.1 0 0 0-15.5-3M4 4v4h4M4 13a8.1 8.1 0 0 0 15.5 3M20 20v-4h-4"/></svg>
+        </button>
+        <button id="btn-configuracoes" class="icon-button" type="button" aria-label="Abrir configurações" title="Configurações">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.88-.34A1.7 1.7 0 0 0 14 20.93V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.95 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.58 15 1.7 1.7 0 0 0 3.02 14H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 8.95a1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 8.95 4.6 1.7 1.7 0 0 0 10 3.04V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.88A1.7 1.7 0 0 0 20.96 10H21a2 2 0 1 1 0 4h-.09A1.7 1.7 0 0 0 19.4 15Z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="calculator-column" aria-labelledby="titulo-calculo">
+        <div class="eyebrow">NOVO CÁLCULO</div>
+        <div class="section-heading">
+          <div>
+            <h1 id="titulo-calculo">Produção por peso</h1>
+            <p>Selecione o recipiente e informe os valores medidos.</p>
+          </div>
+        </div>
+
+        <section id="painel-resultado" class="result-panel" aria-live="polite">
+          <div class="result-header">
+            <span>Quantidade produzida</span>
+            <span id="resultado-recipiente" class="container-badge">—</span>
+          </div>
+          <div id="resultado-valor" class="result-number">0</div>
+          <p id="resultado-mensagem" class="result-message">Carregando configurações...</p>
+        </section>
+
+        <section class="surface" aria-labelledby="titulo-recipientes">
+          <div class="surface-heading">
+            <div>
+              <h2 id="titulo-recipientes">Recipiente</h2>
+              <p>A tara é aplicada automaticamente.</p>
+            </div>
+          </div>
+          <div id="lista-recipientes" class="container-grid" role="radiogroup" aria-label="Recipientes disponíveis"></div>
+        </section>
+
+        <section class="surface" aria-labelledby="titulo-valores">
+          <div class="surface-heading">
+            <div>
+              <h2 id="titulo-valores">Valores medidos</h2>
+              <p>Vírgula e ponto são aceitos como separador decimal.</p>
+            </div>
+          </div>
+          <div class="input-grid">
+            <div class="field">
+              <label for="input-peso-bruto">Peso bruto</label>
+              <div class="input-with-unit">
+                <input id="input-peso-bruto" type="text" inputmode="decimal" autocomplete="off" placeholder="0,000" aria-describedby="erro-peso-bruto">
+                <span>kg</span>
+              </div>
+              <small id="erro-peso-bruto" class="field-error" aria-live="polite"></small>
+            </div>
+            <div class="field">
+              <label for="input-gramatura">Gramatura</label>
+              <div class="input-with-unit">
+                <input id="input-gramatura" type="text" inputmode="decimal" autocomplete="off" placeholder="0" aria-describedby="erro-gramatura">
+                <span>g</span>
+              </div>
+              <small id="erro-gramatura" class="field-error" aria-live="polite"></small>
+            </div>
+          </div>
+        </section>
+
+        <section id="resumo-calculo" class="surface calculation-summary is-hidden" aria-label="Resumo do cálculo">
+          <div class="summary-row"><span>Peso bruto</span><strong id="resumo-peso-bruto">—</strong></div>
+          <div class="summary-row"><span>Tara</span><strong id="resumo-tara">—</strong></div>
+          <div class="summary-row"><span>Peso líquido</span><strong id="resumo-peso-liquido">—</strong></div>
+          <div class="summary-row"><span>Rendimento</span><strong id="resumo-rendimento">—</strong></div>
+        </section>
+
+        <div class="calculator-actions">
+          <button id="btn-salvar" class="button button-primary" type="button" disabled>Salvar cálculo</button>
+          <button id="btn-copiar" class="button button-secondary" type="button" disabled>Copiar resultado</button>
+          <button id="btn-limpar" class="button button-ghost" type="button">Limpar</button>
+        </div>
+      </section>
+
+      <aside class="history-column" aria-labelledby="titulo-historico">
+        <section class="surface history-surface">
+          <div class="history-heading">
+            <div>
+              <div class="eyebrow">REGISTROS COMPARTILHADOS</div>
+              <h2 id="titulo-historico">Histórico</h2>
+              <p id="historico-status">Últimos cálculos salvos por todos os usuários.</p>
+            </div>
+            <span id="contador-historico" class="count-badge">0</span>
+          </div>
+
+          <div class="search-field">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input id="busca-produto-id" class="uppercase-input" type="search" autocomplete="off" placeholder="BUSCAR SOMENTE PELO ID" aria-label="Buscar histórico pelo ID do produto">
+            <button id="btn-limpar-busca" type="button" aria-label="Limpar busca" title="Limpar busca">×</button>
+          </div>
+
+          <div id="lista-historico" class="history-list" aria-live="polite"></div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <dialog id="dialog-salvar" class="modal">
+    <form id="form-salvar" method="dialog" novalidate>
+      <div class="modal-header">
+        <div>
+          <span class="eyebrow">IDENTIFICAÇÃO</span>
+          <h2>Salvar cálculo</h2>
+          <p>Informe os dados usados para localizar o registro depois.</p>
+        </div>
+        <button class="modal-close" type="button" data-close-dialog="dialog-salvar" aria-label="Fechar">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label for="salvar-produto-id">ID do produto</label>
+          <input id="salvar-produto-id" class="uppercase-input" type="text" maxlength="60" autocomplete="off" required placeholder="EX.: PROD-001">
+          <small id="erro-salvar-produto" class="field-error"></small>
+        </div>
+        <div class="field">
+          <label for="salvar-endereco">Endereço</label>
+          <input id="salvar-endereco" class="uppercase-input" type="text" maxlength="100" autocomplete="off" required placeholder="EX.: A-01-02">
+          <small id="erro-salvar-endereco" class="field-error"></small>
+        </div>
+        <div class="save-preview">
+          <span>Quantidade</span>
+          <strong id="salvar-quantidade">0</strong>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="button button-ghost" type="button" data-close-dialog="dialog-salvar">Cancelar</button>
+        <button id="btn-confirmar-salvar" class="button button-primary" type="submit">Confirmar salvamento</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dialog-editar" class="modal">
+    <form id="form-editar" method="dialog" novalidate>
+      <div class="modal-header">
+        <div>
+          <span class="eyebrow">REVISÃO DO REGISTRO</span>
+          <h2>Editar cálculo salvo</h2>
+          <p>O valor calculado originalmente será preservado.</p>
+        </div>
+        <button class="modal-close" type="button" data-close-dialog="dialog-editar" aria-label="Fechar">×</button>
+      </div>
+      <div class="modal-body">
+        <input id="editar-registro-id" type="hidden">
+        <input id="editar-registro-versao" type="hidden">
+        <div class="field">
+          <label for="editar-produto-id">ID do produto</label>
+          <input id="editar-produto-id" class="uppercase-input" type="text" maxlength="60" required>
+        </div>
+        <div class="field">
+          <label for="editar-endereco">Endereço</label>
+          <input id="editar-endereco" class="uppercase-input" type="text" maxlength="100" required>
+        </div>
+        <div class="field">
+          <label for="editar-quantidade">Quantidade final</label>
+          <input id="editar-quantidade" type="number" min="0" step="1" required>
+        </div>
+        <div class="comparison-card">
+          <div><span>Calculado originalmente</span><strong id="editar-original">0</strong></div>
+          <div><span>Diferença atual</span><strong id="editar-diferenca">0</strong></div>
+        </div>
+        <p id="erro-edicao" class="modal-error" aria-live="polite"></p>
+      </div>
+      <div class="modal-actions">
+        <button class="button button-ghost" type="button" data-close-dialog="dialog-editar">Cancelar</button>
+        <button id="btn-confirmar-edicao" class="button button-primary" type="submit">Salvar alterações</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dialog-detalhes" class="modal modal-wide">
+    <div class="modal-header">
+      <div>
+        <span class="eyebrow">RASTREABILIDADE</span>
+        <h2>Detalhes do registro</h2>
+      </div>
+      <button class="modal-close" type="button" data-close-dialog="dialog-detalhes" aria-label="Fechar">×</button>
+    </div>
+    <div id="conteudo-detalhes" class="modal-body"></div>
+  </dialog>
+
+  <dialog id="dialog-configuracoes" class="modal modal-wide">
+    <div class="modal-header">
+      <div>
+        <span class="eyebrow">CONFIGURAÇÕES</span>
+        <h2>Preferências e administração</h2>
+        <p>O tema é local. Taras e fórmula são compartilhadas.</p>
+      </div>
+      <button class="modal-close" type="button" data-close-dialog="dialog-configuracoes" aria-label="Fechar">×</button>
+    </div>
+    <div class="modal-body settings-layout">
+      <section class="settings-section">
+        <h3>Aparência</h3>
+        <div class="settings-row">
+          <label for="select-tema">Tema</label>
+          <select id="select-tema">
+            <option value="dark">Escuro</option>
+            <option value="light">Claro</option>
+            <option value="system">Sistema</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <div class="settings-section-heading">
+          <div>
+            <h3>Administração</h3>
+            <p>O PIN é validado somente no servidor.</p>
+          </div>
+          <span id="status-admin" class="admin-status">Bloqueado</span>
+        </div>
+
+        <div id="admin-login" class="admin-login">
+          <div class="field">
+            <label for="input-pin">PIN administrativo</label>
+            <input id="input-pin" type="password" inputmode="numeric" maxlength="8" autocomplete="current-password" placeholder="••••">
+          </div>
+          <button id="btn-login-admin" class="button button-secondary" type="button">Desbloquear</button>
+          <p id="erro-pin" class="modal-error"></p>
+        </div>
+
+        <div id="admin-painel" class="admin-panel is-hidden">
+          <div class="admin-toolbar">
+            <button id="btn-sair-admin" class="button button-ghost button-small" type="button">Bloquear painel</button>
+          </div>
+
+          <div class="settings-grid">
+            <div class="field">
+              <label for="admin-rendimento">Rendimento</label>
+              <input id="admin-rendimento" type="number" min="0.01" max="1" step="0.01">
+            </div>
+            <div class="field">
+              <label for="admin-arredondamento">Arredondamento</label>
+              <select id="admin-arredondamento">
+                <option value="truncar">Somente unidades completas</option>
+                <option value="arredondar">Arredondamento convencional</option>
+              </select>
+            </div>
+          </div>
+          <button id="btn-salvar-formula" class="button button-secondary" type="button">Salvar fórmula</button>
+
+          <div class="admin-divider"></div>
+          <div class="settings-section-heading">
+            <div>
+              <h3>Recipientes</h3>
+              <p>As alterações serão aplicadas para todos os usuários.</p>
+            </div>
+            <button id="btn-adicionar-recipiente" class="button button-ghost button-small" type="button">Adicionar</button>
+          </div>
+          <div id="lista-admin-recipientes" class="admin-container-list"></div>
+          <button id="btn-salvar-recipientes" class="button button-secondary" type="button">Salvar recipientes</button>
+
+          <div class="danger-zone">
+            <div>
+              <h3>Zona de risco</h3>
+              <p>Arquiva todos os cálculos do banco compartilhado.</p>
+            </div>
+            <button id="btn-limpar-historico" class="button button-danger" type="button">Arquivar histórico</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </dialog>
+
+  <dialog id="dialog-confirmacao" class="modal modal-compact">
+    <div class="modal-header">
+      <div>
+        <span class="eyebrow">CONFIRMAÇÃO</span>
+        <h2 id="confirmacao-titulo">Confirmar ação</h2>
+      </div>
+      <button class="modal-close" type="button" data-close-dialog="dialog-confirmacao" aria-label="Fechar">×</button>
+    </div>
+    <div class="modal-body">
+      <p id="confirmacao-mensagem"></p>
+    </div>
+    <div class="modal-actions">
+      <button class="button button-ghost" type="button" data-close-dialog="dialog-confirmacao">Cancelar</button>
+      <button id="btn-confirmar-acao" class="button button-danger" type="button">Confirmar</button>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

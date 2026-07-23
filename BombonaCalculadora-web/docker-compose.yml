@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: bombonacalc
+      POSTGRES_USER: bombonacalc
+      POSTGRES_PASSWORD: bombonacalc
+    volumes:
+      - bombonacalc_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bombonacalc -d bombonacalc"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      NODE_ENV: production
+      PORT: 8080
+      DATABASE_ADAPTER: postgres
+      DATABASE_URL: postgres://bombonacalc:bombonacalc@db:5432/bombonacalc
+      DATABASE_SSL: "false"
+      ADMIN_PIN: "3007"
+      SESSION_SECRET: altere-esta-chave-em-producao-por-uma-chave-realmente-segura
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  bombonacalc_db:
